@@ -5,8 +5,8 @@ stages:
     deps:
     - path: data_given/winequality.csv
       hash: md5
-      md5: d1088fe0cd8f22710ec202dcf4d9ba97
-      size: 390376
+      md5: ccc8d3507eb151f53f760d36abdef888
+      size: 91998
     - path: src/get_data.py
       hash: md5
       md5: 8fd3db103e3a52fa634e3de9ebf30a20
@@ -18,15 +18,15 @@ stages:
     outs:
     - path: data/raw/winequality.csv
       hash: md5
-      md5: 3828b64bb302d42491d5d0952ebb0416
-      size: 414690
+      md5: d98e8f2eca228c11c4de1cc96866a54d
+      size: 91998
   split_data:
     cmd: python src/split_data.py --config=params.yaml
     deps:
     - path: data_given/winequality.csv
       hash: md5
-      md5: d1088fe0cd8f22710ec202dcf4d9ba97
-      size: 390376
+      md5: ccc8d3507eb151f53f760d36abdef888
+      size: 91998
     - path: src/get_data.py
       hash: md5
       md5: 8fd3db103e3a52fa634e3de9ebf30a20
@@ -38,9 +38,41 @@ stages:
     outs:
     - path: data/processed/test_winequality.csv
       hash: md5
-      md5: d30b320d920545a0b78dbd3e5eb603e6
-      size: 83080
+      md5: 01718da3bd6e206060ed00667ca1a389
+      size: 18510
     - path: data/processed/train_winequality.csv
       hash: md5
-      md5: 7d65d403db2db48c3054888a66a47fa3
-      size: 331761
+      md5: 4bccf4d668cdc60115de42ba74d416ab
+      size: 73633
+  train_and_evaluate:
+    cmd: python src/train_and_evaluate.py --config=params.yaml
+    deps:
+    - path: data/processed/test_winequality.csv
+      hash: md5
+      md5: 01718da3bd6e206060ed00667ca1a389
+      size: 18510
+    - path: data/processed/train_winequality.csv
+      hash: md5
+      md5: 4bccf4d668cdc60115de42ba74d416ab
+      size: 73633
+    - path: src/train_and_evaluate.py
+      hash: md5
+      md5: 4fd971099d0bb078bce9ef282c14dc97
+      size: 2608
+    params:
+      params.yaml:
+        estimators.ElasticNet.params.alpha: 0.88
+        estimators.ElasticNet.params.l1_ratio: 0.89
+    outs:
+    - path: report/params.json
+      hash: md5
+      md5: 0568f34313ba7c5e55128b75dbcbee5c
+      size: 43
+    - path: report/scores.json
+      hash: md5
+      md5: ac89e037063ee307b6d23c8ef0583610
+      size: 96
+    - path: saved_models/model.joblib
+      hash: md5
+      md5: 2859b6066e8769b2f1e842cbec6a517c
+      size: 1263
